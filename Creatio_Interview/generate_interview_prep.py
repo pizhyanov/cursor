@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """Generate interview prep Excel for Creatio/BPMSoft developer role."""
 
+from pathlib import Path
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.utils import get_column_letter
 
-OUTPUT = "/workspace/Собеседование_Creatio_Ответы_Владислав_Пыжьянов.xlsx"
+OUTPUT = str(Path(__file__).resolve().parent / "Собеседование_Creatio_Ответы_Владислав_Пыжьянов.xlsx")
+ASCII_OUTPUT = str(Path(__file__).resolve().parent / "Creatio_Interview_QA_Pyzhyanov.xlsx")
 
 # Sheets: (name, rows as (category, question, answer))
 DATA = {
@@ -1028,8 +1030,9 @@ def main() -> None:
     overview.auto_filter.ref = "A1:D5"
 
     wb.save(OUTPUT)
+    wb.save(ASCII_OUTPUT)
     total = sum(len(v) for v in DATA.values())
-    print(f"Saved {OUTPUT} with {total} Q&A rows across {len(DATA)} topic sheets")
+    print(f"Saved {OUTPUT} (and {ASCII_OUTPUT}) with {total} Q&A rows across {len(DATA)} topic sheets")
 
 
 if __name__ == "__main__":
