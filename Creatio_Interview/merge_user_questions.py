@@ -706,6 +706,28 @@ ANSWER_BANK: list[tuple[str, str]] = [
         "Что сказать: «IIS + app + БД; Redis почти всегда на боевых стендах».",
     ),
     (
+        "отличия esq и select",
+        "ESQ (EntitySchemaQuery) — запрос на уровне схем Creatio: права, локализация, "
+        "удобные фильтры. Есть на клиенте и сервере.\n\n"
+        "Select/Insert/Update/Delete (Terrasoft.Core.DB) — конструкторы ближе к SQL: "
+        "гибче, но ближе к таблицам; права сами «как в ESQ» могут не примениться. Обычно сервер.\n\n"
+        "Entity Fetch/Save — одна запись.\n\n"
+        "Когда что: обычная бизнес-выборка → ESQ; сложный серверный SQL → Select…; "
+        "одна запись → Entity.\n\n"
+        "ESQ внутри часто становится SQL: esq.GetSelectQuery(UserConnection).GetSqlText()\n\n"
+        "Что сказать: «ESQ — платформенный объектный запрос с правами; "
+        "Select — низкоуровневый SQL-builder Core.DB».",
+    ),
+    (
+        "способы работы с бд на клиенте, на бэке",
+        "Клиент (JS): в основном ESQ, сервисы (ServiceHelper), иногда OData-подобные вызовы.\n"
+        "Сервер (C#): Entity, ESQ, Select/Insert/Update/Delete (Core.DB), редко голый SQL.\n\n"
+        "Отличие ESQ и Select:\n"
+        "• ESQ — схемы Creatio + права;\n"
+        "• Select — SQL-конструктор ближе к БД, гибче, осторожнее с правами.\n\n"
+        "Что сказать: «Клиент — ESQ/сервисы; сервер — Entity/ESQ/Core.DB Select».",
+    ),
+    (
         "ldap ad",
         "Интеграция с Active Directory/LDAP для пользователей и входа: синхронизация оргструктуры/учёток и SSO-подобная корпоративная аутентификация (настройка в админке Creatio).\n"
         "Что сказать: «Синхронизация пользователей/групп из AD + корпоративный вход».",
@@ -953,21 +975,28 @@ def style_sheet(ws) -> None:
 def enrich(row: dict) -> dict:
     answer = row["answer"]
     note = ""
-    if answer:
+    stub_markers = (
+        "(esq, классы select",
+        "entity-model)",
+    )
+    is_stub = bool(answer) and (
+        len(answer) < 80
+        and any(m in answer.lower() for m in stub_markers)
+    )
+    # Prefer generated rich answer for known ESQ/Select question even if stub note existed
+    generated = lookup_answer(row["question"])
+    if (not answer or is_stub) and generated:
+        answer = generated
+        note = "ответ дополнен"
+    elif answer:
         answer = simplify_existing(answer)
-        # If answer looks wrong for DI question in one file (immutable text) — keep as-is but user had mixed notes
     else:
-        generated = lookup_answer(row["question"])
-        if generated:
-            answer = generated
-            note = "ответ дополнен"
-        else:
-            answer = (
-                "Кратко своими словами: вспомните определение из учебника/документации и добавьте 1 пример. "
-                "Если тема Creatio — свяжите с пакетами/ESQ/процессами.\n"
-                "Что сказать: термин + зачем нужен + маленький пример."
-            )
-            note = "заготовка — допишите"
+        answer = (
+            "Кратко своими словами: вспомните определение из учебника/документации и добавьте 1 пример. "
+            "Если тема Creatio — свяжите с пакетами/ESQ/процессами.\n"
+            "Что сказать: термин + зачем нужен + маленький пример."
+        )
+        note = "заготовка — допишите"
     if note and note not in answer:
         answer = answer + f"\n\n[{note}]"
     return {**row, "answer": answer}
