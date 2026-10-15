@@ -1,0 +1,14 @@
+{
+  "creatio_interview_xlsx": "../Creatio_Interview/Creatio_Interview_QA_Pyzhyanov.xlsx",
+  "local_creatio_root": "C:/Users/pizhyanov/Desktop/РАБОТА/кодинг/CREATIO",
+  "local_allow_dirs": [
+    "база знаний",
+    "ПРИМЕРЫ C#",
+    "ПРИМЕРЫ js",
+    "ПРИМЕРЫ SQL",
+    "ПРИМЕРЫ БП",
+    "ПРИМЕРЫ ШАБЛОНОВ",
+    "тестовые задания"
+  ],
+  "local_exts": [".md", ".txt", ".sql", ".cs", ".js"]
+}

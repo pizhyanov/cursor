@@ -1,0 +1,73 @@
+{
+  "name": "interview-right-hand",
+  "version": "0.1.0",
+  "description": "Windows interview assistant overlay for Creatio / BPMSoft technical interviews",
+  "main": "electron/main.js",
+  "author": "InterviewRightHand",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -k \"vite\" \"wait-on http://127.0.0.1:5173 && electron .\"",
+    "build:renderer": "vite build",
+    "build:knowledge": "python scripts/build-knowledge-pack.py",
+    "build": "npm run build:renderer && electron-builder --win",
+    "preview": "vite preview",
+    "start": "electron ."
+  },
+  "build": {
+    "appId": "com.interviewrighthand.app",
+    "productName": "InterviewRightHand",
+    "directories": {
+      "output": "dist-electron"
+    },
+    "files": [
+      "electron/**/*",
+      "dist/**/*",
+      "knowledge/pack/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "knowledge/pack",
+        "to": "knowledge/pack"
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  },
+  "dependencies": {
+    "electron-store": "^8.2.0",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.1.2",
+    "electron": "^34.2.0",
+    "electron-builder": "^25.1.8",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "typescript": "^5.7.3",
+    "vite": "^6.1.0",
+    "wait-on": "^8.0.2"
+  }
+}
