@@ -33,14 +33,18 @@ npm run dev
 - `Ctrl+Shift+H` — скрыть/показать окно
 - `Ctrl+Shift+Up/Down` — прозрачность
 
-## Сборка установщика
+## Сборка
 
 ```bash
 npm run build:knowledge
-npm run build
+npm run build:renderer
+set CSC_IDENTITY_AUTO_DISCOVERY=false
+npx electron-builder --win dir
 ```
 
-Артефакты: `dist-electron/` (NSIS Setup + portable).
+Запуск собранного приложения: `dist-electron/win-unpacked/InterviewRightHand.exe`.
+
+NSIS/portable могут требовать режим разработчика Windows (symlink при распаковке winCodeSign). Для раздачи на другой ПК достаточно zip-папки `win-unpacked` или включить Developer Mode и собрать `npm run build`.
 
 ## Настройки в приложении
 
